@@ -1,0 +1,4 @@
+This Maven projects must be built in order, executing 'mvn clean install' within each:
+1. orders-module
+2. orders-scala
+3. orders-web

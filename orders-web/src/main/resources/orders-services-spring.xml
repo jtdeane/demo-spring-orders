@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:component-scan base-package="cogito.online.processing" />
+    <context:annotation-config/>
+
+	<util:map id="prices">
+	    <entry key="Dice" value="10"/>
+	    <entry key="Card Deck" value="6"/>
+	    <entry key="Rings" value="12"/>
+	    <entry key="Quarters" value="6"/>
+	    <entry key="Marbles" value="8"/>
+        <entry key="Rabbit" value="45"/>
+        <entry key="Top Hat" value="100"/>
+        <entry key="Rainbow Scarf" value="15"/>  
+	</util:map>
+	
+    <util:map id="discounts">
+        <entry key="Rings" value=".10"/>
+        <entry key="Quarters" value=".15"/>
+        <entry key="Marbles" value=".5"/>
+        <entry key="Rabbit" value=".10"/>
+        <entry key="Top Hat" value=".25"/> 
+    </util:map>
+	
+    <bean id="orderProcess" class="cogito.online.processing.OrderProcess" scope="prototype">
+        <property name="prices" ref="prices"/>
+        <property name="discounts" ref="discounts"/>  
+    </bean>    
+    
+    <bean id="functionalManager" class="cogito.online.processing.FunctionalManager" scope="singleton">
+         <constructor-arg index="0"><ref bean="prices"/></constructor-arg>
+         <constructor-arg index="1"><ref bean="discounts"/></constructor-arg>
+    </bean>  
+    
+</beans>

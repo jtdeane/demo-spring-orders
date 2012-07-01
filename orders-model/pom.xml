@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- =======================Organization Info=========================== -->
+    <organization>
+        <name>Cogito</name>
+        <url>http://www.cogito.ws</url>
+    </organization>
+    <inceptionYear>2010</inceptionYear>
+    <description>Order Processing Domain Model</description>
+
+	<!-- =========================Project Details=========================== -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cogito.online</groupId>
+    <artifactId>orders-model</artifactId>
+	<version>1.2.0</version>
+    <name>Orders Model</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<org.slf4j-version>1.5.10</org.slf4j-version>
+    </properties>
+
+	<!-- ==========================Dependencies============================= -->	
+	<dependencies>
+
+		<!-- OXM -->		
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.2</version>
+      	</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${org.slf4j-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${org.slf4j-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+		
+    <!-- ===========Local and Central Reporitory Locations================== -->
+    <repositories>
+
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+	
+		<repository>
+			<id>org.springframework.maven.milestone</id>
+			<name>Spring Maven Milestone Repository</name>
+			<url>http://maven.springframework.org/milestone</url>
+			<snapshots><enabled>false</enabled></snapshots>
+		</repository>
+    </repositories>
+	
+	<!-- =====================Distribution Locations======================== -->
+    <distributionManagement>
+		<repository>
+            <id>deployment-directory</id>
+            <url>file:///opt/demos/repo</url>
+        </repository>
+        <site>
+            <id>orders-model-website</id>
+            <url>file:///opt/demos/info/orders-model</url>
+        </site>
+    </distributionManagement>
+	
+    <!-- ======================Build Time Settings========================== -->
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<id>install</id>
+						<phase>install</phase>
+						<goals>
+							<goal>sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>				
+				<executions>
+                	<execution>
+                  		<id>attach-sources</id>
+                  		<goals>
+                    		<goal>jar</goal>
+                  		</goals>
+                	</execution>
+              	</executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.5.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.4.3</version>
+            </plugin>
+        </plugins>
+    </build>	
+    
+    <!-- =======================Reporting Plugins=========================== -->
+    <reporting>
+        <plugins>
+            <!--generates a FindBugs report-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <findbugsXmlOutput>true</findbugsXmlOutput>
+                    <findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory>
+                </configuration>
+            </plugin> 
+            <!--generates a PMD report-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <linkXref>true</linkXref>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>1.6</targetJdk>
+                </configuration>
+            </plugin>
+            <!--checks unit test coverage-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.2</version> 
+                <configuration>
+                    <check>
+                        <haltOnFailure>false</haltOnFailure>
+                    </check>
+                </configuration>
+            </plugin>
+            <!--cross-reference project source-->            
+		      <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-jxr-plugin</artifactId>
+		        <version>2.1</version>
+		      </plugin>                 
+            <!-- ============parses the generated TEST-*.xml files under============ -->
+            <!-- ============$basedir/target/surefire-reports and renders============ -->
+            <!-- ============them to DOXIA which creates the web interface============ -->
+            <!-- ============version of the test results. Mainly used by mvn site============ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.4.3</version>
+            </plugin>
+            <!-- ============Generate the documentation site for your project.============ -->
+            <!-- ============mvn site:site, mvn site:deploy============ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>2.0.1</version>
+            </plugin>
+
+            <!-- ============Generates documentation for the Java code in the project using the standard Javadoc tool.============ -->
+            <!-- ============Runs with mvn site command============ -->
+            <!-- ============Explicit usage mvn javadoc============ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <linksource>true</linksource>
+                </configuration>
+            </plugin>
+
+            <!-- ============Generate reports information about the project.============ -->
+            <!-- ============Runs with mvn site command============ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.1.2</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>summary</report>
+                            <report>dependencies</report>
+                            <report>project-team</report>
+                            <report>mailing-list</report>
+                            <report>license</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+    
+    <!-- ============================Developers============================= -->
+    <developers>
+        <developer>
+            <id>12456789</id>
+            <name>Jeremy Deane</name>
+            <email>jeremy.deane@gmail.com</email>
+            <organization>Plymouth Rock Assurance</organization>
+            <organizationUrl>http://www.jeremydeane.net</organizationUrl>
+            <roles>
+                <role>Director of Research and Architecture</role>
+            </roles>
+            <properties>
+                <phone>123-435-2345</phone>
+            </properties>
+        </developer>
+    </developers>
+
+</project>

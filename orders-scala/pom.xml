@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- =======================Organization Info=========================== -->
+    <organization>
+        <name>Cogito</name>
+        <url>http://www.cogito.ws</url>
+    </organization>
+    <inceptionYear>2010</inceptionYear>
+    <description>Order Scala Processor</description>
+
+    <!-- =========================Project Details=========================== -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cogito.online</groupId>
+    <artifactId>orders-scala</artifactId>
+	<version>1.2.0</version>
+    <name>Orders Scala</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<org.slf4j-version>1.5.10</org.slf4j-version>
+    </properties>
+
+    <!-- ==========================Dependencies============================= -->
+
+    <dependencies>    
+        
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>cogito.online</groupId>
+            <artifactId>orders-model</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.7.7</version>
+        </dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${org.slf4j-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${org.slf4j-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<scope>test</scope>
+		</dependency>
+        
+    </dependencies>
+
+    <!-- ===========Local and Central Reporitory Locations================== -->    
+    <repositories>
+        <repository>
+            <id>scala-tools.org</id>
+            <name>Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </repository>
+        
+		<repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+		
+    </repositories>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>scala-tools.org</id>
+            <name>Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+	<!-- =====================Distribution Locations======================== -->
+    <distributionManagement>
+		<repository>
+            <id>deployment-directory</id>
+            <url>file:///opt/demos/repo</url>
+        </repository>
+    </distributionManagement>
+
+    <!-- ======================Build Time Settings========================== -->
+    <build>
+     	<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>	
+	        <plugin>
+           	<groupId>org.scala-tools</groupId>
+	            <artifactId>maven-scala-plugin</artifactId>
+				<version>2.7.2</version>
+	            <executions>
+	                <execution>
+	                    <id>scala-compile-first</id>
+	                    <phase>process-resources</phase>
+	                    <goals>
+	                        <goal>add-source</goal>
+	                        <goal>compile</goal>
+	                    </goals>
+	                </execution>                                    
+	                <execution>
+	                    <id>scala-test-compile</id>
+	                    <phase>process-test-resources</phase>
+	                    <goals>
+	                        <goal>testCompile</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	        </plugin>		
+    		<plugin>
+		        <groupId>org.codehaus.mojo</groupId>
+		        <artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+		        <executions>
+		            <execution>
+		                <id>add-source</id>
+		                <phase>generate-sources</phase>
+		                <goals>
+		                    <goal>add-source</goal>
+		                </goals>
+			            <configuration>
+			                <sources>
+			                    <source>src/main/scala</source>
+			                </sources>
+			            </configuration>
+		            </execution>
+		        </executions>
+		     </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.5.1</version>
+            </plugin>		
+        </plugins>
+    </build>
+
+    <!-- ============================Developers============================= -->
+    <developers>
+        <developer>
+            <id>12456789</id>
+            <name>Jeremy Deane</name>
+            <email>jeremy.deane@gmail.com</email>
+            <organization>Plymouth Rock Assurance</organization>
+            <organizationUrl>http://www.jeremydeane.net</organizationUrl>
+            <roles>
+                <role>Director of Research and Architecture</role>
+            </roles>
+            <properties>
+                <phone>123-435-2345</phone>
+            </properties>
+        </developer>
+    </developers>
+
+</project>
