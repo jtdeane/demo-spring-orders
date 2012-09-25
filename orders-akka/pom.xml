@@ -1,42 +1,69 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <!-- =======================Organization Info=========================== -->
-    <organization>
-        <name>Cogito</name>
-        <url>http://www.cogito.ws</url>
-    </organization>
-    <inceptionYear>2010</inceptionYear>
-    <description>Order Scala Processor</description>
+  <!-- =======================Organization Info=========================== -->
+  <organization>
+      <name>Cogito</name>
+      <url>http://www.cogito.ws</url>
+  </organization>
+  <inceptionYear>2010</inceptionYear>
+  <description>Order Akka (Scala) Processor</description>
 
-    <!-- =========================Project Details=========================== -->
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>cogito.online</groupId>
-    <artifactId>orders-scala</artifactId>
-	<version>1.2.0</version>
-    <name>Orders Scala</name>
+  <!-- =========================Project Details=========================== -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cogito.online</groupId>
+  <artifactId>orders-akka</artifactId>
+  <version>1.2.0</version>
+  <name>Orders Akka</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<org.slf4j-version>1.5.10</org.slf4j-version>
-    </properties>
+  <properties>
+    <encoding>UTF-8</encoding>
+    <scala.version>2.9.2</scala.version>
+	<org.slf4j-version>1.5.10</org.slf4j-version>
+  </properties>
 
-    <!-- ==========================Dependencies============================= -->
+  <repositories>
+    <repository>
+      <id>scala-tools.org</id>
+      <name>Scala-Tools Maven2 Repository</name>
+      <url>http://scala-tools.org/repo-releases</url>
+    </repository>
+    
+    <repository>
+	  <id>typesafe</id>
+	  <name>Typesafe Repository</name>
+	  <url>http://repo.typesafe.com/typesafe/releases/</url>
+	</repository>
+  </repositories>
 
-    <dependencies>    
-        
-        <!-- Internal dependencies -->
-        <dependency>
-            <groupId>cogito.online</groupId>
-            <artifactId>orders-model</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>2.9.2</version>
-        </dependency>
+<!--
+  <pluginRepositories>
+    <pluginRepository>
+      <id>scala-tools.org</id>
+      <name>Scala-Tools Maven2 Repository</name>
+      <url>http://scala-tools.org/repo-releases</url>
+    </pluginRepository>
+  </pluginRepositories>
+-->
+  <dependencies>
+    <!-- Internal dependencies -->
+    <dependency>
+        <groupId>cogito.online</groupId>
+        <artifactId>orders-model</artifactId>
+        <version>1.2.0</version>
+    </dependency>
+  
+  
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scala.version}</version>
+    </dependency>
+    
+    <dependency>
+	  <groupId>com.typesafe.akka</groupId>
+	  <artifactId>akka-actor</artifactId>
+	  <version>2.0.3</version>
+	</dependency>
 
 		<!-- Logging -->
 		<dependency>
@@ -91,43 +118,22 @@
 			<version>4.7</version>
 			<scope>test</scope>
 		</dependency>
-        
-    </dependencies>
 
-    <!-- ===========Local and Central Reporitory Locations================== -->    
-    <repositories>
-        <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </repository>
-        
-		<repository>
-            <id>central</id>
-            <name>Maven Repository Switchboard</name>
-            <url>http://repo1.maven.org/maven2</url>
-        </repository>
-		
-    </repositories>
-    
-    <pluginRepositories>
-        <pluginRepository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </pluginRepository>
-    </pluginRepositories>
+		<dependency>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest_2.9.2</artifactId>
+			<version>2.0.M4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-testkit</artifactId>
+			<version>2.0.3</version>
+			<scope>test</scope>
+		</dependency>
+  </dependencies>
 
-	<!-- =====================Distribution Locations======================== -->
-    <distributionManagement>
-		<repository>
-            <id>deployment-directory</id>
-            <url>file:///opt/demos/repo</url>
-        </repository>
-    </distributionManagement>
-
-    <!-- ======================Build Time Settings========================== -->
-    <build>
+  <build>
      	<plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -185,7 +191,7 @@
                 <version>2.5.1</version>
             </plugin>		
         </plugins>
-    </build>
+  </build>
 
     <!-- ============================Developers============================= -->
     <developers>
@@ -203,5 +209,4 @@
             </properties>
         </developer>
     </developers>
-
 </project>

@@ -34,9 +34,13 @@
         <property name="discounts" ref="discounts"/>  
     </bean>    
     
-    <bean id="functionalManager" class="cogito.online.processing.FunctionalManager" scope="singleton">
+    <bean id="functionalManager" class="cogito.online.processing.FunctionalManager" scope="prototype">
          <constructor-arg index="0"><ref bean="prices"/></constructor-arg>
          <constructor-arg index="1"><ref bean="discounts"/></constructor-arg>
     </bean>  
     
+    <bean id="akkaManager" class="cogito.online.processing.AkkaManager" factory-method="newRouter" scope="prototype">
+         <constructor-arg index="0"><ref bean="prices"/></constructor-arg>
+         <constructor-arg index="1"><ref bean="discounts"/></constructor-arg>
+    </bean>
 </beans>

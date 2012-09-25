@@ -1,14 +1,25 @@
 package cogito.online.processing
 
-import scala.actors._, Actor._
+import akka.actor.Actor
+import akka.actor.Props
 import scala.reflect._
 import scala.collection._
 import scala.collection.JavaConversions._
-import java.util.List
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
 import cogito.online.model.Order
+import akka.actor.ActorSystem
+import akka.routing.SmallestMailboxRouter
 
 
+
+object AkkaManager {
+  val system = ActorSystem("MySystem")
+  
+  def newRouter(jPrices:java.util.Map[String, String], jDiscounts:java.util.Map[String, String]) = {
+	  system.actorOf(Props(new AkkaManager(jPrices,jDiscounts)).withRouter(SmallestMailboxRouter(20)))
+  }
+  
+}
 
 //complements of The Uncarved Blog
 trait LogHelper {
@@ -16,20 +27,17 @@ trait LogHelper {
     lazy val logger = Logger.getLogger(loggerName)
 }
 
-class FunctionalManager(jPrices:java.util.Map[String, String], 
+class AkkaManager(jPrices:java.util.Map[String, String], 
 	jDiscounts:java.util.Map[String, String]) extends Actor with LogHelper {
 	
-	val prices:mutable.Map[String, String] = jPrices
-	val discounts:mutable.Map[String, String] = jDiscounts
+	val prices:Map[String, String] = jPrices
+	val discounts:Map[String, String] = jDiscounts
 
 	implicit def javaToScalaDouble(d: java.lang.Double) = d.doubleValue
 	
-	def act() {
-		loop {
-			receive {
-        		case order: Order => processOrder(order)
-			}
-		}
+	def receive() = {
+		case order: Order => processOrder(order)
+		case m => unhandled(m)
 	}
 	
 	def processOrder (order:Order):Unit = {
@@ -75,5 +83,7 @@ class FunctionalManager(jPrices:java.util.Map[String, String],
 			output = output + (" T $" + charged.intValue())	
 
 			logger.debug(output)
+			
+			sender ! (order,price,discount,subTotal,charged)
 	}
 } 

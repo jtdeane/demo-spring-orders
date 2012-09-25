@@ -158,8 +158,13 @@
 		   <artifactId>spring-test</artifactId>
 		   <version>${org.springframework-version}</version>
 		   <scope>test</scope>
-		</dependency>		
-        
+		</dependency>
+
+		<dependency>
+			<groupId>cogito.online</groupId>
+			<artifactId>orders-akka</artifactId>
+			<version>1.2.0</version>
+		</dependency>
 	</dependencies>
 	
     <!-- ===========Local and Central Reporitory Locations================== -->	

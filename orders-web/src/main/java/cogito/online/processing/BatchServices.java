@@ -12,10 +12,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
+import akka.actor.ActorRef;
 import cogito.online.model.Order;
-import cogito.online.processing.BatchServices;
-import cogito.online.processing.FunctionalManager;
-import cogito.online.processing.OrderProcess;
 
 /**
  * Processes a batch of orders using Java or using Scala, a functional 
@@ -36,6 +34,8 @@ public class BatchServices implements ApplicationContextAware {
     private Executor pool = new ThreadPoolExecutor(10, 50, Long.MAX_VALUE, 
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(2000), 
             new ThreadPoolExecutor.DiscardOldestPolicy());
+
+	private ActorRef router;
     
     /**
 	 * Process orders using a single thread
@@ -61,6 +61,8 @@ public class BatchServices implements ApplicationContextAware {
 	        //process in same thread
 	        orderProcess.run();
 		}
+		
+		waitForCalcsToComplete(orders);
 	}    
     
     /**
@@ -87,6 +89,8 @@ public class BatchServices implements ApplicationContextAware {
 	        //process in new thread
 	        pool.execute(orderProcess); 
 		}
+		
+		waitForCalcsToComplete(orders);
 	}
 	
 	/**
@@ -111,13 +115,46 @@ public class BatchServices implements ApplicationContextAware {
 		for (Order order : orders) {
 				
 			functionalManager.$bang(order);
-		}		
+		}
+		
+		waitForCalcsToComplete(orders);
+	}
+
+	/**
+	 * Process orders using Akka Actors
+	 * @param orders
+	 * @throws InterruptedException 
+	 * @throws Exception
+	 */
+	public void akkaProcessing(List<Order> orders) throws Exception {
+
+		if (log.isDebugEnabled()) {
+			log.debug("\n");
+			log.debug("********************************************************");
+			log.debug("Started akka processing of batch containing " 
+					+ orders.size() + " orders");
+		}
+		
+		for (Order order : orders) {
+			router.tell(order);
+		}
+		
+		waitForCalcsToComplete(orders);
+	}
+
+	private void waitForCalcsToComplete(List<Order> orders)
+			throws InterruptedException {
+		for (Order order : orders) {
+			order.waitForCalcToFinish();
+		}
 	}
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		
-		this.applicationContext = applicationContext;	
+		this.applicationContext = applicationContext;
+		router  = (ActorRef) applicationContext.getBean("akkaManager");
 	}
+
 }
