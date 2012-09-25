@@ -42,7 +42,12 @@ public class BatchServicesTest {
 	public void testScalaProcessing() throws Exception {
 		
 		batchServices.functionalProcessing(getOrdersFile().getOrders());
-	}	
+	}
+	
+	@Test
+	public void testAkkaProcessing() throws Exception {
+		batchServices.akkaProcessing(getOrdersFile().getOrders());
+	}
 	
     /**
      * Converts Batch XML to Pojo

@@ -1,5 +1,7 @@
 package cogito.online.model;
 
+import java.util.concurrent.Semaphore;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
@@ -19,6 +21,8 @@ public final class Order {
 	@XStreamAsAttribute
 	private final int amount;
 	
+	private Semaphore calculation = new Semaphore(0);
+	
 	/**
 	 * Default Constructor
 	 * @param map
@@ -30,6 +34,22 @@ public final class Order {
 		this.item = item;
 		this.id = id;
 		this.customer = customer;
+	}
+	
+	public void finishCalc() {
+		if (calculation != null)
+			calculation.release();
+		else
+			System.out.println("WTF");
+	}
+	
+	public void waitForCalcToFinish() throws InterruptedException {
+		calculation.acquire();
+	}
+	
+	private Object readResolve() {
+		calculation = new Semaphore(0);
+		return this;
 	}
 	
 	/**

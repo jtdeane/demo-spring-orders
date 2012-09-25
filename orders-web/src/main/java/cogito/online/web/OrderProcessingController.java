@@ -30,7 +30,7 @@ public class OrderProcessingController {
 	
 	/**
 	 * Accepts in a batch of orders and based on the URI parameter 
-	 * uses a specific processing technique {single, multi, scala}
+	 * uses a specific processing technique {single, multi, scala, akka}
 	 * @param orders
 	 * @param processor
 	 * @return Orders
@@ -50,6 +50,10 @@ public class OrderProcessingController {
 			//single threaded Java code
 			batchServices.singleThreadedProcessing(orders.getOrders());
 			
+		} else if (processor.toLowerCase().equals("akka")) {
+			
+			batchServices.akkaProcessing(orders.getOrders());
+		
 		} else {
 			
 			//multi-threaded Java code

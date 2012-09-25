@@ -67,6 +67,8 @@ public class OrderProcess implements Runnable {
 			
 			logJavaOrder(price, discount, charged, subTotal);
 		}
+		
+		order.finishCalc();
 	}
 	
 	/**
