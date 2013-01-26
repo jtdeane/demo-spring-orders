@@ -37,7 +37,7 @@ class FunctionalManager(jPrices:java.util.Map[String, String],
 		//get the price and calculate sub-total
 		val price = prices.getOrElse(order.getItem(), "0").toDouble;
 		
-		val subTotal = order.getAmount() * price
+		val subTotal = order.getAmount().doubleValue() * price
 		
 		//get the discount and apply
 		val discount = discounts.getOrElse(order.getItem(), "0").toDouble;
