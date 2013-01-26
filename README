@@ -1,4 +1,1 @@
-These Maven projects must be built in order, executing 'mvn clean install' within each:
-1. orders-module
-2. orders-scala
-3. orders-web
+Spring MVC Web Application - RESTful Web Services supporting JSON and XML Representations.
