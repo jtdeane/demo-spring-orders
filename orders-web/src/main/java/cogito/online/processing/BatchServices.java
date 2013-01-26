@@ -13,9 +13,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import cogito.online.model.Order;
-import cogito.online.processing.BatchServices;
-import cogito.online.processing.FunctionalManager;
-import cogito.online.processing.OrderProcess;
 
 /**
  * Processes a batch of orders using Java or using Scala, a functional 
@@ -87,31 +84,6 @@ public class BatchServices implements ApplicationContextAware {
 	        //process in new thread
 	        pool.execute(orderProcess); 
 		}
-	}
-	
-	/**
-	 * Process orders using Scala Actors
-	 * @param orders
-	 * @throws Exception
-	 */
-	public void functionalProcessing(List<Order> orders) throws Exception {
-		
-		if (log.isDebugEnabled()) {
-			log.debug("\n");
-			log.debug("********************************************************");
-			log.debug("Started functional processing of batch containing " 
-					+ orders.size() + " orders");
-		}
-		
-		FunctionalManager functionalManager = (FunctionalManager) 
-				applicationContext.getBean("functionalManager");
-		
-		functionalManager.start();
-		
-		for (Order order : orders) {
-				
-			functionalManager.$bang(order);
-		}		
 	}
 
 	@Override

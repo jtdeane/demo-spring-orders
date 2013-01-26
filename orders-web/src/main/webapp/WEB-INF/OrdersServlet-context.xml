@@ -1,35 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:util="http://www.springframework.org/schema/util" xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:oxm="http://www.springframework.org/schema/oxm"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd">
 
     <context:component-scan base-package="cogito.online" />
     <context:annotation-config/>
- 
-    <bean id="oxmMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
-        <property name="autodetectAnnotations" value="true"/>
-            <property name="aliases">
-	        <map>
-	            <entry key="order" value="cogito.online.model.Order" />
-	            <entry key="orders" value="cogito.online.model.Orders" />
-	        </map>
-        </property>
-    </bean>
+    
+    <!-- 
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
+	
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+	    <property name="favorPathExtension" value="false" />
+	    <property name="favorParameter" value="true" />
+	    <property name="mediaTypes" >
+	        <value>
+	            json=application/json
+	            xml=application/xml
+	        </value>
+	    </property>
+	</bean> -->   
+	
+	<oxm:jaxb2-marshaller id="jaxb2Marshaller">
+	   <oxm:class-to-be-bound name="cogito.online.model.Order" />
+	   <oxm:class-to-be-bound name="cogito.online.model.Orders" />
+	</oxm:jaxb2-marshaller>
     
     <bean id="marshallingHttpMessageConverter"
         class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
-        <property name="marshaller" ref="oxmMarshaller" />
-        <property name="unmarshaller" ref="oxmMarshaller" />
+        <property name="marshaller" ref="jaxb2Marshaller" />
+        <property name="unmarshaller" ref="jaxb2Marshaller" />
     </bean>
-   
+     
+    <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
     
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
         <property name="messageConverters">
             <util:list id="beanList">
+                <ref bean="jsonConverter" />
                 <ref bean="marshallingHttpMessageConverter" />
             </util:list>
         </property>

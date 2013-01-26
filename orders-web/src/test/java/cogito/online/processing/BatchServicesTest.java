@@ -1,18 +1,22 @@
 package cogito.online.processing;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import cogito.online.model.Order;
 import cogito.online.model.Orders;
-
-import com.thoughtworks.xstream.XStream;
 
 /**
  * Unit test the auditing services
@@ -21,6 +25,9 @@ import com.thoughtworks.xstream.XStream;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:orders-services-spring.xml"})
 public class BatchServicesTest {
+	
+	private static final Logger logger = LoggerFactory.getLogger
+			(BatchServicesTest.class);	
 	
 	@Autowired
 	BatchServices batchServices;
@@ -38,47 +45,32 @@ public class BatchServicesTest {
 
 	}
 	
-	@Test
-	public void testScalaProcessing() throws Exception {
-		
-		batchServices.functionalProcessing(getOrdersFile().getOrders());
-	}	
-	
     /**
      * Converts Batch XML to Pojo
      * @param fileName
      * @return String
      */
     private Orders getOrdersFile() throws Exception {
-        StringBuffer text = new StringBuffer();
-        Orders orders = null;
-        BufferedReader in = null;
-        String line = null;
-        
-        try {
-        	
-            in = new BufferedReader(new InputStreamReader(this.getClass()
-                    .getResourceAsStream("/batch.xml")));
-
-            while ((line = in.readLine()) != null) {
-                text.append(line);
-            }
             
-    		XStream xstream = new XStream();
-    		xstream.autodetectAnnotations(true);
-    		
-        	xstream.alias("order", Order.class);
-    		xstream.alias("orders", Orders.class);
-    		
-    		orders = (Orders)xstream.fromXML(text.toString());            
+    		//Unmarshell to Java
+    		JAXBContext context = JAXBContext.newInstance(Orders.class);			
+    		Unmarshaller unmarshaller = context.createUnmarshaller();
+    		unmarshaller.setEventHandler(new ValidationEventHandler() {
+
+                @Override
+                public boolean handleEvent(ValidationEvent event) {
+                    logger.error((event.getMessage()));
+                    return true;
+                }}
+
+            );            
+            
+    		InputStream stream = this.getClass().getClassLoader()
+                    .getResourceAsStream("batch.xml");
 			
-		} finally {
-		
-			if (in != null) {
-			
-		        in.close();
-			}
-		}
+    		Orders orders  = (Orders) unmarshaller.unmarshal(stream);
+
+    		logger.debug(orders.toString());
         
         return orders;
     } 	

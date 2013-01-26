@@ -32,11 +32,6 @@
     <bean id="orderProcess" class="cogito.online.processing.OrderProcess" scope="prototype">
         <property name="prices" ref="prices"/>
         <property name="discounts" ref="discounts"/>  
-    </bean>    
-    
-    <bean id="functionalManager" class="cogito.online.processing.FunctionalManager" scope="singleton">
-         <constructor-arg index="0"><ref bean="prices"/></constructor-arg>
-         <constructor-arg index="1"><ref bean="discounts"/></constructor-arg>
     </bean>  
     
 </beans>

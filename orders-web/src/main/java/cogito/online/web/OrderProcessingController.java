@@ -41,11 +41,7 @@ public class OrderProcessingController {
 			@PathVariable String processor) throws Exception {
 		
 		//process batch using Scala code
-		if (processor.toLowerCase().equals("scala")) {
-			
-			batchServices.functionalProcessing(orders.getOrders());
-			
-		} else if (processor.toLowerCase().equals("single")) {
+		if (processor.toLowerCase().equals("single")) {
 			
 			//single threaded Java code
 			batchServices.singleThreadedProcessing(orders.getOrders());
@@ -58,7 +54,7 @@ public class OrderProcessingController {
 		
 		if (logger.isDebugEnabled()) {
 			
-			logger.debug(processor + " processor handling: " +  orders);
+			logger.debug(processor + " processor handled: " +  orders);
 		}
 		
 		return  orders;

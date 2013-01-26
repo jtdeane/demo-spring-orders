@@ -8,7 +8,7 @@
 		<layout class="org.apache.log4j.PatternLayout">
             <param 
                 name="ConversionPattern" 
-                value="%d{HH:mm:ss:SSS} | %c | %t | %m%n"/>
+                value="%d{HH:mm:ss:SSS} | %t | %m%n"/>
 		</layout>
 	</appender>
 	
@@ -18,11 +18,11 @@
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
-	<logger name="org.springframework.core">
-		<level value="error" />
-	</logger>
+	<category name="org.apache">
+        <priority value="error" />
+    </category>
 	
-	<logger name="org.springframework.beans">
+	<logger name="org.springframework">
 		<level value="error" />
 	</logger>
 	
@@ -30,14 +30,10 @@
 		<level value="error" />
 	</logger>
 
-	<logger name="org.springframework.web">
-		<level value="info" />
-	</logger>
-
 	<!-- Root Logger -->
-	<root>
-		<priority value="error" />
-		<appender-ref ref="console" />
-	</root>
+    <root>
+        <priority value="error" />
+        <appender-ref ref="console"/>
+    </root>
 	
 </log4j:configuration>

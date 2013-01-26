@@ -21,7 +21,7 @@
         </layout>      
   	</appender>
 	
-	<category name="org.apache.log4j.xml">
+	<category name="org.apache">
 		<priority value="error" />
         <appender-ref ref="logfile"/>
 	</category>
