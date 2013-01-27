@@ -1,5 +1,7 @@
 package cogito.online.model;
 
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -10,8 +12,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
-
-import junit.framework.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class TransformationTest {
 		
 		logger.debug(order.toString());
 		
-    	Assert.assertTrue(order.getCustomer().equals("Blain"));
+    	assertTrue(order.getCustomer().equals("Blain"));
     	
 	}
 		
@@ -63,7 +63,7 @@ public class TransformationTest {
 		
 		logger.debug(orders.toString());
 		
-    	Assert.assertTrue(orders.getOrders().size() == 3);
+    	assertTrue(orders.getOrders().size() == 3);
     	
 	}	
 	
@@ -79,7 +79,7 @@ public class TransformationTest {
 		
 		logger.debug(json);
 		
-		Assert.assertTrue(json.contains("Blain"));
+		assertTrue(json.contains("Blain"));
 	}
 	
 	@Test
@@ -100,7 +100,7 @@ public class TransformationTest {
 		
 		logger.debug(json);
 		
-		//Assert.assertTrue(json.contains("Blain"));
+		assertTrue(json.contains("Turner"));
 	}	
 	
 	@Test
@@ -126,7 +126,7 @@ public class TransformationTest {
 
 		logger.debug(order.toString());
 		
-		Assert.assertEquals(order.getAmount(), new Integer(6));    	
+		assertEquals(order.getAmount(), new Integer(6));    	
 	}
 	
 	@Test
@@ -159,7 +159,7 @@ public class TransformationTest {
 
 		logger.debug(orders.toString());
 		
-    	Assert.assertTrue(orders.getOrders().size() == 3);    	
+    	assertTrue(orders.getOrders().size() == 3);    	
 	}	
 	
 	@Test
@@ -178,7 +178,7 @@ public class TransformationTest {
 		
 		logger.debug(xml);
 
-		Assert.assertTrue(xml.contains("Turner"));
+		assertTrue(xml.contains("Turner"));
 	}
 	
 	@Test
@@ -204,7 +204,7 @@ public class TransformationTest {
 		
 		logger.debug("Validation 1 \n" + xml);
 
-		//Assert.assertTrue(xml.contains("Turner"));
+		assertTrue(xml.contains("Turner"));
 	}	
 
 }
