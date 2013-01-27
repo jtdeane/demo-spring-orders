@@ -1,1 +1,1 @@
-Spring MVC Web Application - RESTful Web Services supporting JSON and XML Representations.
+Spring MVC Web Application - RESTful Web Services supporting JSON (Jackson) and XML (JAXB) Representations.
