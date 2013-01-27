@@ -200,9 +200,8 @@ public class TransformationTest {
 		marsheller.marshal(orders, outStream);
 		
 		String xml = outStream.toString();
-
 		
-		logger.debug("Validation 1 \n" + xml);
+		logger.debug(xml);
 
 		assertTrue(xml.contains("Turner"));
 	}	

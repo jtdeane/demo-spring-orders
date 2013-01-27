@@ -12,21 +12,7 @@
         http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd">
 
     <context:component-scan base-package="cogito.online" />
-    <context:annotation-config/>
-    
-    <!-- 
-	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
-	
-	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-	    <property name="favorPathExtension" value="false" />
-	    <property name="favorParameter" value="true" />
-	    <property name="mediaTypes" >
-	        <value>
-	            json=application/json
-	            xml=application/xml
-	        </value>
-	    </property>
-	</bean> -->   
+    <context:annotation-config/> 
 	
 	<oxm:jaxb2-marshaller id="jaxb2Marshaller">
 	   <oxm:class-to-be-bound name="cogito.online.model.Order" />
