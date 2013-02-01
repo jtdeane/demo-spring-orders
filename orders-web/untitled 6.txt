@@ -1,6 +1,0 @@
-{"batchId":"A1234","date":"07252012","orders":[
-{"id":"X1351","customer":"Turner","item":"Rings","amount":4},
-{"id":"X1352","customer":"Turner","item":"Dice","amount":2},
-{"id":"X1353","customer":"Turner","item":"Rainbow Scarf","amount":1}
-{"id":"X1354","customer":"Turner","item":"Quarters","amount":5}
-]}
