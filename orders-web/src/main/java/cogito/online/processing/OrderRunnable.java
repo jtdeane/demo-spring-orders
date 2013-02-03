@@ -7,11 +7,11 @@ import org.apache.log4j.Logger;
 import cogito.online.model.Order;
 
 /**
- * <code>OrderProcess</code> is used to process an order in a specific thread
+ * <code>OrderRunnable</code> is used to process an order in a specific thread
  * @author jeremydeane
  * @version 1.0
  */
-public class OrderProcess implements Runnable {
+public class OrderRunnable implements Runnable {
 	
 	//set at runtime
 	private final Order order;
@@ -27,7 +27,7 @@ public class OrderProcess implements Runnable {
 	 * @param order
 	 * @param discounts
 	 */
-	public OrderProcess (Order order) {
+	public OrderRunnable (Order order) {
 		this.order = order;
 	}
 

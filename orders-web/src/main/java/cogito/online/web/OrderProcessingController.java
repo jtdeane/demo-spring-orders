@@ -48,8 +48,8 @@ public class OrderProcessingController {
 			
 		} else {
 			
-			//multi-threaded Java code
-			batchServices.multiThreadedProcessing(orders.getOrders());
+			//multi-threaded Java code - Fire and Forget
+			batchServices.javaFireAndForget(orders.getOrders());
 		}
 		
 		if (logger.isDebugEnabled()) {

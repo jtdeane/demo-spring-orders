@@ -29,9 +29,14 @@
         <entry key="Top Hat" value=".25"/> 
     </util:map>
 	
-    <bean id="orderProcess" class="cogito.online.processing.OrderProcess" scope="prototype">
+    <bean id="orderRunnable" class="cogito.online.processing.OrderRunnable" scope="prototype">
         <property name="prices" ref="prices"/>
         <property name="discounts" ref="discounts"/>  
-    </bean>  
+    </bean>
+    
+    <bean id="orderCallable" class="cogito.online.processing.OrderCallable" scope="prototype">
+        <property name="prices" ref="prices"/>
+        <property name="discounts" ref="discounts"/>  
+    </bean>       
     
 </beans>

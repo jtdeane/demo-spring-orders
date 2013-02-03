@@ -38,11 +38,19 @@ public class BatchServicesTest {
 	}
 
 	@Test
-	public void testMultiThreadedProcessing() throws Exception {
+	public void testJavaFireAndForget() throws Exception {
 		
-		batchServices.multiThreadedProcessing(getOrdersFile().getOrders());
+		batchServices.javaFireAndForget(getOrdersFile().getOrders());
 
 	}
+	
+	@Test
+	public void testJavaForkJoin() throws Exception {
+		
+		double batchTotal = batchServices.javaForkJoin(getOrdersFile().getOrders());
+		
+		System.out.println ("The total is " + batchTotal);
+	}	
 	
     /**
      * Converts Batch XML to Pojo

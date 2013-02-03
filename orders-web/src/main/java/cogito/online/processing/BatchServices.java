@@ -1,7 +1,12 @@
 package cogito.online.processing;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -15,9 +20,7 @@ import org.springframework.stereotype.Service;
 import cogito.online.model.Order;
 
 /**
- * Processes a batch of orders using Java or using Scala, a functional 
- * programming language, Scala
- * 
+ * Processes a batch of orders using Java and Akka Actors
  * @author jeremydeane
  */
 @Service
@@ -30,9 +33,17 @@ public class BatchServices implements ApplicationContextAware {
     /*
      * Thread pool Acts as a throttle preventing out of memory exception
      */
-    private Executor pool = new ThreadPoolExecutor(10, 50, Long.MAX_VALUE, 
+    private final Executor pool = new ThreadPoolExecutor(10, 50, Long.MAX_VALUE, 
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(2000), 
             new ThreadPoolExecutor.DiscardOldestPolicy());
+    
+    /*
+     * Equation compliments of Venkat Subramaniam - 
+     * Programming Concurrency on the JVM
+     */  
+    final int numberOfCores = Runtime.getRuntime().availableProcessors();
+    final double blockingCoefficient = 0.9;
+    final int poolSize = (int)(numberOfCores / (1 - blockingCoefficient));
     
     /**
 	 * Process orders using a single thread
@@ -41,49 +52,97 @@ public class BatchServices implements ApplicationContextAware {
      */
 	public void singleThreadedProcessing(List<Order> orders) throws Exception {
 		
-		if (log.isDebugEnabled()) {
-			log.debug("\n");
-			log.debug("********************************************************");
-			log.debug("Started single-threaded processing of batch containing " 
-					+ orders.size() + " orders");
-		}
+		logProcessingStart("Single Threaded", orders.size());		
 		
 		for (Order order : orders) {
 			
 	        Object[] constructorArguments = {order};
 	        
-	        OrderProcess orderProcess = (OrderProcess) applicationContext.
-	        		getBean("orderProcess", constructorArguments);
+	        OrderRunnable orderRunnable = (OrderRunnable) applicationContext.
+	        		getBean("orderRunnable", constructorArguments);
 	        
 	        //process in same thread
-	        orderProcess.run();
+	        orderRunnable.run();
 		}
 	}    
     
     /**
-	 * Process orders using Java Thread Pool
+	 * Process orders using Java Thread Pool - Fire and Forget
      * @param orders
      * @throws Exception
      */
-	public void multiThreadedProcessing(List<Order> orders) throws Exception {
+	public void javaFireAndForget(List<Order> orders) throws Exception {
 		
-		if (log.isDebugEnabled()) {
-			log.debug("\n");
-			log.debug("********************************************************");
-			log.debug("Started multi-threaded processing of batch containing " 
-					+ orders.size() + " orders");
-		}
+		logProcessingStart("Java Fire & Forget", orders.size());
 		
 		for (Order order : orders) {
 			
 	        Object[] constructorArguments = {order};
 	        
-	        OrderProcess orderProcess = (OrderProcess) applicationContext.
-	        		getBean("orderProcess", constructorArguments);
+	        OrderRunnable orderRunnable = (OrderRunnable) applicationContext.
+	        		getBean("orderRunnable", constructorArguments);
 	        
 	        //process in new thread
-	        pool.execute(orderProcess); 
+	        pool.execute(orderRunnable); 
 		}
+	}
+	
+    /**
+	 * Process orders using Java Thread Pool - Fork-Join
+     * @param orders
+     * @throws Exception
+     */
+	public double javaForkJoin(List<Order> orders) throws Exception {
+		
+		//method variable
+		double batchTotal = 0.0;
+		
+		logProcessingStart("Java Fork-Join", orders.size());
+		
+	    final List<Callable<Double>> callableList = 
+	    		new ArrayList<Callable<Double>>();		
+		
+	    //create a list of order callables - returning sub-totals
+		for (Order order : orders) {
+			
+	        Object[] constructorArguments = {order};
+	        
+	        OrderCallable orderCallable = (OrderCallable) applicationContext.
+	        		getBean("orderCallable", constructorArguments);
+	        
+	        callableList.add(orderCallable);
+		}
+
+	    final ExecutorService executorPool = Executors.newFixedThreadPool(poolSize);
+		
+		//get the future value of the order sub-totals
+	    final List<Future<Double>> orderSubTotals = executorPool.invokeAll
+	    		(callableList, 10000, TimeUnit.SECONDS);
+	    
+	    //calculate the total batch amount
+	    for (Future<Double> orderSubtotal : orderSubTotals) {
+		
+	    	batchTotal += orderSubtotal.get();
+		}
+	    
+	    executorPool.shutdown();
+	    
+	    log.debug("Batch Total " + batchTotal);
+	    
+	    return batchTotal;
+	}	
+	
+	/**
+	 * Log start of order processing
+	 * @param processingType
+	 * @param orderSize
+	 */
+	private void logProcessingStart (String processingType, int orderSize) {
+
+		log.debug("\n");
+		log.debug("********************************************************");
+		log.debug("Started " + processingType + " processing of batch containing " 
+				+ orderSize + " orders");
 	}
 
 	@Override
