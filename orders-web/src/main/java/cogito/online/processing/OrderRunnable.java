@@ -60,7 +60,7 @@ public class OrderRunnable implements Runnable {
 		}
 		
 		//mock resource processing time
-		order.mockResourceProcessingTime();
+		order.mockResourceProcessingTime(4);
 		
 		//log final charge
 		if (log.isDebugEnabled()) {

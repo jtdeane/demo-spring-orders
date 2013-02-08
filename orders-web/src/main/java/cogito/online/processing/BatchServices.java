@@ -13,11 +13,16 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
+import akka.util.Duration;
+import cogito.online.actors.DiscountTypedActor;
+import cogito.online.actors.PriceTypedActor;
 import cogito.online.model.Order;
+
 
 /**
  * Processes a batch of orders using Java and Akka Actors
@@ -27,8 +32,13 @@ import cogito.online.model.Order;
 public class BatchServices implements ApplicationContextAware {
 	
 	private final Logger log = Logger.getLogger(this.getClass());
-	
 	private ApplicationContext applicationContext;
+	
+	@Autowired
+	private PriceTypedActor priceTypedActor;
+	
+	@Autowired
+	private DiscountTypedActor discountTypedActor;
 	
     /*
      * Thread pool Acts as a throttle preventing out of memory exception
@@ -127,10 +137,68 @@ public class BatchServices implements ApplicationContextAware {
 	    
 	    executorPool.shutdown();
 	    
-	    log.debug("Batch Total " + batchTotal);
+	    batchTotal = Math.round(batchTotal);
+	    
+	    log.debug("Batch Total $" + batchTotal);
 	    
 	    return batchTotal;
-	}	
+	}
+	
+	/**
+	 * Process a batch of orders in an Actor Pipeline
+	 * @param orders
+	 */
+	public void akkaActorPipeline (List<Order> orders) {
+		
+		logProcessingStart("Akka Actor Pipeline", orders.size());
+		
+		for (Order order : orders) {
+			
+			priceTypedActor.calculateAmount(order, applicationContext);
+		}		
+	}
+	
+	/**
+	 * Process a batch of orders using Actors and return the total amount
+	 * @param orders
+	 * @return double
+	 * @throws Exception
+	 */
+	public double akkaActorForkJoin  (List<Order> orders) throws Exception {
+		
+		//method variable
+		double batchTotal = 0.0;
+		Duration oneSecond = Duration.create(1, "seconds");
+		
+		logProcessingStart("Akka Actor Pipeline", orders.size());
+		
+		for (Order order : orders) {
+			
+			akka.dispatch.Future<Double> discount = 
+					discountTypedActor.lookupDiscount(order);
+			
+			akka.dispatch.Future<Double> subtotal =  
+					priceTypedActor.calculateAndReturnAmount(order);
+			
+			Double discountedSubTotal = subtotal.await(oneSecond).get() * 
+					(1 - discount.await(oneSecond).get());			
+			
+			StringBuffer output = new StringBuffer("Order ID: ");
+			output.append(order.getId());
+			output.append(" Discounted SubTotal: $");
+			output.append(discountedSubTotal);
+			
+			log.debug(output.toString());
+			
+			batchTotal += discountedSubTotal;
+		}
+		
+		batchTotal = Math.round(batchTotal);
+		
+	    log.debug("Batch Total $" + batchTotal);
+		
+		return batchTotal;
+	}
 	
 	/**
 	 * Log start of order processing

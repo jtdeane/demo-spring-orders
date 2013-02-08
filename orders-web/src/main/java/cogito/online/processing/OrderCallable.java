@@ -60,7 +60,7 @@ public class OrderCallable implements Callable<Double> {
 		}
 		
 		//mock resource processing time
-		order.mockResourceProcessingTime();
+		order.mockResourceProcessingTime(4);
 		
 		//log final charge
 		if (log.isDebugEnabled()) {
@@ -68,7 +68,7 @@ public class OrderCallable implements Callable<Double> {
 			logJavaOrder(price, discount, charged, subTotal);
 		}
 		
-		return subTotal;
+		return charged;
 	}
 	
 	/**

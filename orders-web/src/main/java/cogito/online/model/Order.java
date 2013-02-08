@@ -71,12 +71,12 @@ public final class Order implements Comparable<Order>, Serializable {
 	
 	/**
 	 * Mock resource processing time
-	 * @param price
+	 * @param factor
 	 */
-	public void mockResourceProcessingTime() {
+	public void mockResourceProcessingTime(int factor) {
 		
 		if (amount <= 40) {
-			fibonacci(amount*4);
+			fibonacci(amount*factor);
 		} else {
 			fibonacci(40);
 		}

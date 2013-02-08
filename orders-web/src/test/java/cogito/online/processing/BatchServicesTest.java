@@ -7,6 +7,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -26,7 +27,9 @@ import cogito.online.model.Orders;
 public class BatchServicesTest {
 	
 	private static final Logger logger = LoggerFactory.getLogger
-			(BatchServicesTest.class);	
+			(BatchServicesTest.class);
+	
+	private Orders orders;
 	
 	@Autowired
 	BatchServices batchServices;
@@ -41,15 +44,36 @@ public class BatchServicesTest {
 	public void testJavaFireAndForget() throws Exception {
 		
 		batchServices.javaFireAndForget(getOrdersFile().getOrders());
-
+		
+		//to view output
+		Thread.sleep(3000);
 	}
 	
 	@Test
 	public void testJavaForkJoin() throws Exception {
 		
-		double batchTotal = batchServices.javaForkJoin(getOrdersFile().getOrders());
+		batchServices.javaForkJoin(getOrdersFile().getOrders());
 		
-		System.out.println ("The total is " + batchTotal);
+		//to view output
+		Thread.sleep(3000);
+	}
+	
+	@Test	
+	public void testAkkaActorPipeline() throws Exception {
+		
+		batchServices.akkaActorPipeline(getOrdersFile().getOrders());
+		
+		//to view output
+		Thread.sleep(3000);
+	}
+	
+	@Test
+	public void testAkkaActorForkJoin() throws Exception {
+		
+		batchServices.akkaActorForkJoin(getOrdersFile().getOrders());
+		
+		//to view output
+		Thread.sleep(3000);
 	}	
 	
     /**
@@ -58,26 +82,32 @@ public class BatchServicesTest {
      * @return String
      */
     private Orders getOrdersFile() throws Exception {
+    	
+    	if (this.orders != null) {
+    		return orders;
+    	}
             
-    		//Unmarshell to Java
-    		JAXBContext context = JAXBContext.newInstance(Orders.class);			
-    		Unmarshaller unmarshaller = context.createUnmarshaller();
-    		unmarshaller.setEventHandler(new ValidationEventHandler() {
+		//Unmarshell to Java
+		JAXBContext context = JAXBContext.newInstance(Orders.class);			
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		unmarshaller.setEventHandler(new ValidationEventHandler() {
 
-                @Override
-                public boolean handleEvent(ValidationEvent event) {
-                    logger.error((event.getMessage()));
-                    return true;
-                }}
+            @Override
+            public boolean handleEvent(ValidationEvent event) {
+                logger.error((event.getMessage()));
+                return true;
+            }}
 
-            );            
-            
-    		InputStream stream = this.getClass().getClassLoader()
-                    .getResourceAsStream("batch.xml");
-			
-    		Orders orders  = (Orders) unmarshaller.unmarshal(stream);
+        );            
+        
+		InputStream stream = this.getClass().getClassLoader()
+                .getResourceAsStream("batch.xml");
+		
+		Orders orders  = (Orders) unmarshaller.unmarshal(stream);
+		
+		this.orders = orders;
 
-    		logger.debug(orders.toString());
+		logger.debug(orders.toString());
         
         return orders;
     } 	

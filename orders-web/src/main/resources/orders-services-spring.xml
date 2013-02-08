@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:util="http://www.springframework.org/schema/util" xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:akka="http://akka.io/schema/akka"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://akka.io/schema/akka http://akka.io/akka-1.0.xsd">
 
     <context:component-scan base-package="cogito.online.processing" />
     <context:annotation-config/>
@@ -37,6 +41,22 @@
     <bean id="orderCallable" class="cogito.online.processing.OrderCallable" scope="prototype">
         <property name="prices" ref="prices"/>
         <property name="discounts" ref="discounts"/>  
-    </bean>       
+    </bean>
+        
+	<akka:typed-actor id="priceActor"
+	    interface="cogito.online.actors.PriceTypedActor"
+	    implementation="cogito.online.actors.PriceTypedActorImpl"
+	    timeout="1000"
+	    scope="singleton">
+	    <property name="prices" ref="prices"/>  
+	</akka:typed-actor>
+	    
+	<akka:typed-actor id="discountActor"
+	    interface="cogito.online.actors.DiscountTypedActor"
+	    implementation="cogito.online.actors.DiscountTypedActorImpl"
+	    timeout="1000"
+	    scope="singleton">
+	    <property name="discounts" ref="discounts"/>     
+	</akka:typed-actor>                       
     
 </beans>
