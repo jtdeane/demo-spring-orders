@@ -1,10 +1,12 @@
 package cogito.online.web;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,34 +31,113 @@ public class OrderProcessingController {
 	BatchServices batchServices;
 	
 	/**
-	 * Accepts in a batch of orders and based on the URI parameter 
-	 * uses a specific processing technique {single, multi, scala}
+	 * Accepts in a batch of orders and processes them
 	 * @param orders
-	 * @param processor
 	 * @return Orders
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "order/{processor}", method=RequestMethod.PUT)
-	public @ResponseBody Orders putOrders (@RequestBody Orders orders, 
-			@PathVariable String processor) throws Exception {
+	@RequestMapping(value = "order/java/single", method=RequestMethod.PUT)
+	public @ResponseBody Orders putOrdersJavaSingle (@RequestBody Orders orders, 
+			HttpServletResponse response) throws Exception {
 		
-		//process batch using Scala code
-		if (processor.toLowerCase().equals("single")) {
-			
-			//single threaded Java code
-			batchServices.singleThreadedProcessing(orders.getOrders());
-			
-		} else {
-			
-			//multi-threaded Java code - Fire and Forget
-			batchServices.javaFireAndForget(orders.getOrders());
-		}
+		logger.debug("Processing Batch " + orders.getBatchId());
+				
+		//single threaded Java code
+		batchServices.singleThreadedProcessing(orders.getOrders());
 		
-		if (logger.isDebugEnabled()) {
-			
-			logger.debug(processor + " processor handled: " +  orders);
-		}
-		
+		response.setStatus(HttpStatus.OK.value());
+
 		return  orders;
+	}
+	
+	/**
+	 * Accepts in a batch of orders and processes them
+	 * @param orders
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "order/java/fireandforget", method=RequestMethod.PUT)
+	public void putOrdersJavaFireAndForget (@RequestBody Orders orders, 
+			HttpServletResponse response) throws Exception {
+		
+		logger.debug("Processing Batch " + orders.getBatchId());
+				
+		//single threaded Java code
+		batchServices.javaFireAndForget(orders.getOrders());
+		
+		response.setStatus(HttpStatus.ACCEPTED.value());
+	}
+	
+	/**
+	 * Accepts in a batch of orders and processes them
+	 * @param orders
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "order/java/forkjoin", method=RequestMethod.PUT)
+	public @ResponseBody String putOrdersJavaForkJoin (@RequestBody Orders orders, 
+			HttpServletResponse response) throws Exception {
+		
+		logger.debug("Processing Batch " + orders.getBatchId());
+				
+		//single threaded Java code
+		double batchTotal = batchServices.javaForkJoin(orders.getOrders());
+		
+		response.setStatus(HttpStatus.OK.value());
+		
+		return "$" + Double.toString(Math.round(batchTotal));
+	}
+	
+	/**
+	 * Accepts in a batch of orders and processes them
+	 * @param orders
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "order/akka/pipeline", method=RequestMethod.PUT)
+	public void putOrdersAkkaFireAndForget (@RequestBody Orders orders, 
+			HttpServletResponse response) throws Exception {
+		
+		logger.debug("Processing Batch " + orders.getBatchId());
+				
+		//single threaded Java code
+		batchServices.akkaActorPipeline(orders.getOrders());
+		
+		response.setStatus(HttpStatus.ACCEPTED.value());
+	}
+	
+	/**
+	 * Accepts in a batch of orders and processes them
+	 * @param orders
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "order/akka/forkjoin", method=RequestMethod.PUT)
+	public @ResponseBody String putOrdersAkkaForkJoin (@RequestBody Orders orders, 
+			HttpServletResponse response) throws Exception {
+		
+		logger.debug("Processing Batch " + orders.getBatchId());
+				
+		//single threaded Java code
+		double batchTotal = batchServices.akkaActorForkJoin(orders.getOrders());
+		
+		response.setStatus(HttpStatus.OK.value());
+		
+		return "$" + Double.toString(Math.round(batchTotal));
+	}
+	
+	/**
+	 * Accepts in a batch of orders and processes them
+	 * @param orders
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "order/akka/mapreduce", method=RequestMethod.PUT)
+	public void putOrdersAkkaMapReduce (@RequestBody Orders orders, 
+			HttpServletResponse response) throws Exception {
+		
+		logger.debug("Processing Batch " + orders.getBatchId());
+				
+		//single threaded Java code
+		batchServices.akkaMapReduceBatch(orders);
+		
+		response.setStatus(HttpStatus.ACCEPTED.value());
 	}	
 }

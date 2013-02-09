@@ -7,12 +7,12 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -29,10 +29,15 @@ public class BatchServicesTest {
 	private static final Logger logger = LoggerFactory.getLogger
 			(BatchServicesTest.class);
 	
+	@Autowired
+	private ApplicationContext applicationContext;	
+	
+	//set once during execution of test
 	private Orders orders;
 	
 	@Autowired
 	BatchServices batchServices;
+
 
 	@Test
 	public void testSingleThreadedProcessing() throws Exception {
@@ -53,12 +58,9 @@ public class BatchServicesTest {
 	public void testJavaForkJoin() throws Exception {
 		
 		batchServices.javaForkJoin(getOrdersFile().getOrders());
-		
-		//to view output
-		Thread.sleep(3000);
 	}
 	
-	@Test	
+	@Test
 	public void testAkkaActorPipeline() throws Exception {
 		
 		batchServices.akkaActorPipeline(getOrdersFile().getOrders());
@@ -71,6 +73,12 @@ public class BatchServicesTest {
 	public void testAkkaActorForkJoin() throws Exception {
 		
 		batchServices.akkaActorForkJoin(getOrdersFile().getOrders());
+	}
+	
+	@Test
+	public void testAkkaMapReduceBatch() throws Exception {
+		
+		batchServices.akkaMapReduceBatch(getOrdersFile());
 		
 		//to view output
 		Thread.sleep(3000);

@@ -57,6 +57,19 @@
 	    timeout="1000"
 	    scope="singleton">
 	    <property name="discounts" ref="discounts"/>     
-	</akka:typed-actor>                       
+	</akka:typed-actor>
+    
+    <akka:untyped-actor id="mapItemsActor"
+        implementation="cogito.online.actors.MapItemsActor"
+        scope="singleton"
+        autostart="true">
+        <property name="reduceItemsActor" ref="reduceItemsActor"/>                     
+    </akka:untyped-actor>
+    
+    <akka:untyped-actor id="reduceItemsActor"
+        implementation="cogito.online.actors.ReduceItemsActor"
+        scope="singleton"
+        autostart="true">
+    </akka:untyped-actor>         	                       
     
 </beans>

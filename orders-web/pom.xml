@@ -134,13 +134,13 @@
 			<version>${org.slf4j-version}</version>
 		</dependency>		
 				
-		<!-- Servlet 
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>-->
+        <!-- Servlet -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-servlet-api</artifactId>
+            <version>7.0.35</version>
+            <scope>provided</scope>
+        </dependency>
 	
 		<!-- Test -->
 		<dependency>

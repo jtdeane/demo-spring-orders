@@ -18,10 +18,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
+import akka.actor.ActorRef;
 import akka.util.Duration;
 import cogito.online.actors.DiscountTypedActor;
 import cogito.online.actors.PriceTypedActor;
 import cogito.online.model.Order;
+import cogito.online.model.Orders;
 
 
 /**
@@ -39,6 +41,9 @@ public class BatchServices implements ApplicationContextAware {
 	
 	@Autowired
 	private DiscountTypedActor discountTypedActor;
+	
+	//set when context is set
+	ActorRef mapItemsActor;
 	
     /*
      * Thread pool Acts as a throttle preventing out of memory exception
@@ -201,6 +206,18 @@ public class BatchServices implements ApplicationContextAware {
 	}
 	
 	/**
+	 * Map and Reduce Item Types for a report from a Batch of Orders
+	 * @param orders
+	 * @throws Exception
+	 */
+	public void akkaMapReduceBatch (Orders orders) throws Exception {
+		
+		log.debug("Akka Map Reduce - Batch ID " + orders.getBatchId());
+		
+		mapItemsActor.sendOneWay(orders);
+	}
+	
+	/**
 	 * Log start of order processing
 	 * @param processingType
 	 * @param orderSize
@@ -217,6 +234,8 @@ public class BatchServices implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		
-		this.applicationContext = applicationContext;	
+		this.applicationContext = applicationContext;
+		
+		mapItemsActor = (ActorRef) applicationContext.getBean("mapItemsActor");
 	}
 }
