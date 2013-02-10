@@ -117,7 +117,6 @@ public final class Order implements Comparable<Order>, Serializable {
 		return output.toString();
 	}
 	
-	
 	@Override
 	public int compareTo(Order that) {
 		return ComparisonChain.start()
@@ -143,16 +142,13 @@ public final class Order implements Comparable<Order>, Serializable {
 		return id;
 	}
 
-
 	public String getCustomer() {
 		return customer;
 	}
 
-
 	public String getItem() {
 		return item;
 	}
-
 
 	public Integer getAmount() {
 		return amount;

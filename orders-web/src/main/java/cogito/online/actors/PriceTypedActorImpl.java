@@ -70,7 +70,7 @@ public final class PriceTypedActorImpl extends TypedActor implements PriceTypedA
 		log.debug(output.toString());
 		
 		return future(amountSubTotal);
-	}
+	}	
 
 	public void setPrices(HashMap<String, String> prices) {
 		this.prices = prices;

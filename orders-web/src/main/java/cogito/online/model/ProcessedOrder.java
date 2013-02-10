@@ -42,7 +42,7 @@ public final class ProcessedOrder implements Serializable {
 		public Builder withDiscountedSubTotal(Double discountedSubTotal) {
 		  this.discountedSubTotal = discountedSubTotal;
 		  return this;
-		}
+		}	
 
 		public ProcessedOrder build() {
 		  validate();
@@ -65,7 +65,7 @@ public final class ProcessedOrder implements Serializable {
 	public Double getDiscountedSubTotal() {
 		return discountedSubTotal;
 	}
-	
+
 	@Override
 	public String toString() {
 		

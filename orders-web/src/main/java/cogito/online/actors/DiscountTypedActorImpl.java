@@ -80,7 +80,7 @@ public final class DiscountTypedActorImpl extends TypedActor implements Discount
 		log.debug("Order ID: " + order.getId() + " Discount: " + df.format(discount));
 		
 		return future(discount);
-	}
+	}	
 	
 	public void setDiscounts(HashMap<String, String> discounts) {
 		this.discounts = discounts;

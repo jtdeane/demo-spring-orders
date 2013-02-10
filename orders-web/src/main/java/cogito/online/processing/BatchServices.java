@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import cogito.online.actors.DiscountTypedActor;
 import cogito.online.actors.PriceTypedActor;
 import cogito.online.model.Order;
 import cogito.online.model.Orders;
+import cogito.online.model.ProcessedBatch;
 
 
 /**
@@ -31,18 +33,20 @@ import cogito.online.model.Orders;
  * @author jeremydeane
  */
 @Service
+@Qualifier("batchServices")
 public class BatchServices implements ApplicationContextAware {
 	
 	private final Logger log = Logger.getLogger(this.getClass());
 	private ApplicationContext applicationContext;
 	
+	//Typed Actors
 	@Autowired
 	private PriceTypedActor priceTypedActor;
 	
 	@Autowired
 	private DiscountTypedActor discountTypedActor;
 	
-	//set when context is set
+	//UnTyped Actor
 	ActorRef mapItemsActor;
 	
     /*
@@ -175,7 +179,7 @@ public class BatchServices implements ApplicationContextAware {
 		double batchTotal = 0.0;
 		Duration oneSecond = Duration.create(1, "seconds");
 		
-		logProcessingStart("Akka Actor Pipeline", orders.size());
+		logProcessingStart("Akka Actor Fork Join", orders.size());
 		
 		for (Order order : orders) {
 			
@@ -215,6 +219,17 @@ public class BatchServices implements ApplicationContextAware {
 		log.debug("Akka Map Reduce - Batch ID " + orders.getBatchId());
 		
 		mapItemsActor.sendOneWay(orders);
+	}
+	
+	public void processBatchAsynchronously (ProcessedBatch processedBatch) {
+
+        Object[] constructorArguments = {processedBatch};
+        
+        BatchRunnable batchRunnable = (BatchRunnable) applicationContext.
+        		getBean("batchRunnable", constructorArguments);
+        
+        //process in new thread
+        pool.execute(batchRunnable);		
 	}
 	
 	/**

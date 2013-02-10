@@ -32,6 +32,21 @@
         <entry key="Rabbit" value=".10"/>
         <entry key="Top Hat" value=".25"/> 
     </util:map>
+    
+    <!-- EHCache Configuration -->
+    <bean id="statusCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:local-ehcache.xml"/>
+    </bean>
+     
+    <bean id="statusCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+        <property name="cacheManager" ref="statusCacheManager"/>
+        <property name="cacheName" value="cogito.online.web.resource.status.cache"/>
+    </bean>
+    
+    <bean id="batchCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+        <property name="cacheManager" ref="statusCacheManager"/>
+        <property name="cacheName" value="cogito.online.web.batch.total.cache"/>
+    </bean>          
 	
     <bean id="orderRunnable" class="cogito.online.processing.OrderRunnable" scope="prototype">
         <property name="prices" ref="prices"/>
@@ -42,6 +57,12 @@
         <property name="prices" ref="prices"/>
         <property name="discounts" ref="discounts"/>  
     </bean>
+    
+    <bean id="batchRunnable" class="cogito.online.processing.BatchRunnable" scope="prototype">
+        <property name="statusCache" ref="statusCache"/>
+        <property name="batchCache" ref="batchCache"/>
+        <property name="batchServices" ref="batchServices"/>  
+    </bean>    
         
 	<akka:typed-actor id="priceActor"
 	    interface="cogito.online.actors.PriceTypedActor"
