@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.async.DeferredResult;
 
+import cogito.online.model.BatchDeferredResult;
+import cogito.online.model.Order;
 import cogito.online.model.Orders;
 import cogito.online.model.ProcessedBatch;
 import cogito.online.model.ResourceStatusConstants;
@@ -66,7 +69,7 @@ public class OrderProcessingController {
 		
 		response.setStatus(HttpStatus.OK.value());
 
-		return  orders;
+		return orders;
 	}
 	
 	/**
@@ -269,4 +272,27 @@ public class OrderProcessingController {
 
 		return batchTotal;
 	}
+
+	/**
+	 * Process a batch in a different thread using Servlet 3 Asynchronous 
+	 * Support - Implemented using Spring MVC DeferredResult
+	 * @param orders
+	 * @param response
+	 * @return BatchDeferredResult
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "deferred/batch/total", method=RequestMethod.PUT)
+	public @ResponseBody BatchDeferredResult putDeferredBatch 
+		(@RequestBody Orders orders, HttpServletResponse response) 
+				throws Exception {
+		
+		logger.debug("Processing Deferred Batch " + orders.getBatchId());
+		
+		BatchDeferredResult batchDeferredResult = 
+				new BatchDeferredResult(6000L, orders.getBatchId());
+		
+		batchServices.processDeferredBatch(batchDeferredResult, orders);
+	
+		return batchDeferredResult;
+	}	
 }

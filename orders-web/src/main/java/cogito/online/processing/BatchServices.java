@@ -23,6 +23,7 @@ import akka.actor.ActorRef;
 import akka.util.Duration;
 import cogito.online.actors.DiscountTypedActor;
 import cogito.online.actors.PriceTypedActor;
+import cogito.online.model.BatchDeferredResult;
 import cogito.online.model.Order;
 import cogito.online.model.Orders;
 import cogito.online.model.ProcessedBatch;
@@ -230,6 +231,28 @@ public class BatchServices implements ApplicationContextAware {
         
         //process in new thread
         pool.execute(batchRunnable);		
+	}
+	
+
+	/**
+	 * Processed batch and update deferred result
+	 * @param batchDeferredResult
+	 * @param orders
+	 * @throws Exception
+	 */
+	public void processDeferredBatch (BatchDeferredResult batchDeferredResult, 
+			Orders orders) throws Exception {
+	
+		double total = akkaActorForkJoin(orders.getOrders());
+		
+		//mock wait time - 4 Seconds
+		Thread.sleep(4000);
+		
+		log.debug("Setting Deferred Batch Total Result For  " 
+				+ orders.getBatchId());
+		
+		batchDeferredResult.setBatchTotal("$" + Math.round(total));
+		batchDeferredResult.setResult("Processing Complete");
 	}
 	
 	/**
