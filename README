@@ -1,2 +1,1 @@
-Spring MVC Web Application - RESTful Web Services supporting JSON (Jackson) and XML (JAXB) Representations. The application
-demonstrates concurrent processing techniques using Java Concurrency, Akka Actors, and Servlet 3 Async.
+Spring MVC Web Application - RESTful Web Services supporting JSON (Jackson) and XML (JAXB) Representations. The application demonstrates concurrent processing techniques using Java Concurrency, Akka Actors, and Servlet 3 Async.
