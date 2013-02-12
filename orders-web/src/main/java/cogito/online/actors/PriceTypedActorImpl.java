@@ -32,7 +32,7 @@ public final class PriceTypedActorImpl extends TypedActor implements PriceTypedA
 		Double amountSubTotal = order.getAmount() * (new Double(price));
 		
 		//mock resource processing time
-		order.mockResourceProcessingTime(2);
+		order.mockResourceProcessingTime(4);
 		
 		ProcessedOrder processedOrder = new ProcessedOrder.Builder().
 				withOrder(order).withAmountSubTotal(amountSubTotal).build();
@@ -60,7 +60,7 @@ public final class PriceTypedActorImpl extends TypedActor implements PriceTypedA
 		Double amountSubTotal = order.getAmount() * (new Double(price));
 		
 		//mock resource processing time
-		order.mockResourceProcessingTime(2);
+		order.mockResourceProcessingTime(4);
 		
 		StringBuffer output = new StringBuffer("Order ID: ");
 		output.append(order.getId());

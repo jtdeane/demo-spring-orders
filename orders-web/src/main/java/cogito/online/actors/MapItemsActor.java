@@ -34,7 +34,10 @@ public final class MapItemsActor extends UntypedActor {
 			
 			for (Order order : orders) {
 				
-				itemsList.add(new Item(order.getItem(), new Integer(1)));	
+				itemsList.add(new Item(order.getItem(), new Integer(1)));
+				
+				//mock processing time
+				order.mockResourceProcessingTime(4);
 			}
 			
 			logItemList(itemsList);

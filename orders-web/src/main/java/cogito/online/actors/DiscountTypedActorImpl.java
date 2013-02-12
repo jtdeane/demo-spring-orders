@@ -45,7 +45,7 @@ public final class DiscountTypedActorImpl extends TypedActor implements Discount
 		}
 		
 		//mock resource processing time
-		processedOrder.getOrder().mockResourceProcessingTime(2);
+		processedOrder.getOrder().mockResourceProcessingTime(4);
 		
 		ProcessedOrder finalProcessedOrder = new ProcessedOrder.Builder().
 				withOrder(processedOrder.getOrder()).
@@ -70,7 +70,7 @@ public final class DiscountTypedActorImpl extends TypedActor implements Discount
 		Double discount = new Double(0);
 		
 		//mock resource processing time
-		order.mockResourceProcessingTime(2);
+		order.mockResourceProcessingTime(4);
 
 		if (discounts.containsKey(order.getItem())) {
 			

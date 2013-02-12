@@ -42,7 +42,10 @@ public final class ReduceItemsActor extends UntypedActor {
 				} else {
 					
 					reducedItemsMap.putIfAbsent(itemType, Integer.valueOf(1));
-				}		
+				}
+				
+				//mock processing time
+				mockResourceProcessingTime();
 			}
 			
 			Map<String, Integer> sortedMap = 
@@ -66,4 +69,25 @@ public final class ReduceItemsActor extends UntypedActor {
 		log.debug("Reduce Item Types - Frequency Summary");
 		log.debug(itemsMap.toString());
 	}
+	
+	/**
+	 * Mock resource processing time
+	 * @param factor
+	 */
+	private void mockResourceProcessingTime() {		
+		fibonacci(4);
+	}
+	
+	/**
+	 * Calculate Fibonacio
+	 * @param n
+	 * @return int
+	 */
+	private int fibonacci(int n) {
+		if (n < 2) {
+			return n;
+		} else {
+			return fibonacci(n-1)+fibonacci(n-2);
+		}
+	}	
 }
