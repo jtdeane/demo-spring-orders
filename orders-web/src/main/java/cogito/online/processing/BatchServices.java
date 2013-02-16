@@ -222,6 +222,10 @@ public class BatchServices implements ApplicationContextAware {
 		mapItemsActor.sendOneWay(orders);
 	}
 	
+	/**
+	 * Process a batch asynchronously
+	 * @param processedBatch
+	 */
 	public void processBatchAsynchronously (ProcessedBatch processedBatch) {
 
         Object[] constructorArguments = {processedBatch};
