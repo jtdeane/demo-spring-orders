@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import cogito.online.model.BatchDeferredResult;
-import cogito.online.model.Order;
 import cogito.online.model.Orders;
 import cogito.online.model.ProcessedBatch;
 import cogito.online.model.ResourceStatusConstants;
