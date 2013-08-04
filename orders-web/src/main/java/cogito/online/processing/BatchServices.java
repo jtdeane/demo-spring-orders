@@ -3,7 +3,9 @@ package cogito.online.processing;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -108,7 +110,7 @@ public class BatchServices implements ApplicationContextAware {
 	}
 	
     /**
-	 * Process orders using Java Thread Pool - Fork-Join
+	 * Process orders using Java Thread Pool - Fork-Join - Futures
      * @param orders
      * @throws Exception
      */
@@ -153,6 +155,59 @@ public class BatchServices implements ApplicationContextAware {
 	    
 	    return batchTotal;
 	}
+	
+    /**
+	 * Process orders using Java Thread Pool - Producer-Consumer - Completion
+     * @param orders
+     * @throws Exception
+     */
+	public double javaProducerConsumer(List<Order> orders) throws Exception {
+		
+		//method variable
+		double batchTotal = 0.0;
+		
+		logProcessingStart("Java Producer-Consumer", orders.size());
+
+
+		//creat the completion service pool
+	    ExecutorService executorPool = Executors.newFixedThreadPool(poolSize);
+	    
+	    CompletionService<Double> completionServicePool = 
+	    		new ExecutorCompletionService<Double>(executorPool);
+	    
+	    log.info("Total Tasks " + orders.size());	    
+	    
+	    //submit each callable
+		for (Order order : orders) {
+			
+	        Object[] constructorArguments = {order};
+	        
+	        OrderCallable orderCallable = (OrderCallable) applicationContext.
+	        		getBean("orderCallable", constructorArguments);
+	        
+	        completionServicePool.submit(orderCallable);
+	        
+	        log.info("order " + order.getId() + "submitted");
+		}
+
+		//as they are completed process them
+    	for (int i = 0; i < orders.size(); i++) {
+    		
+    		Future<Double> orderTotal = completionServicePool.take();
+    		
+    		log.info("Consumed Task #" + i);
+    		
+    		batchTotal += orderTotal.get();
+    	}	    
+	    
+	    executorPool.shutdown();
+	    
+	    batchTotal = Math.round(batchTotal);
+	    
+	    log.debug("Batch Total $" + batchTotal);
+	    
+	    return batchTotal;
+	}	
 	
 	/**
 	 * Process a batch of orders in an Actor Pipeline

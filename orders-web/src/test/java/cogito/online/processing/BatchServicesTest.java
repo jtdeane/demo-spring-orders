@@ -55,6 +55,15 @@ public class BatchServicesTest {
 	}
 	
 	@Test
+	public void testProducerConsumer() throws Exception {
+		
+		batchServices.javaProducerConsumer(getOrdersFile().getOrders());
+		
+		//to view output
+		Thread.sleep(3000);
+	}	
+	
+	@Test
 	public void testJavaForkJoin() throws Exception {
 		
 		batchServices.javaForkJoin(getOrdersFile().getOrders());

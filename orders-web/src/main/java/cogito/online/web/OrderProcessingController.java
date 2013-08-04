@@ -110,6 +110,28 @@ public class OrderProcessingController {
 	/**
 	 * Accepts in a batch of orders and processes them
 	 * @param orders
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "order/java/completion", method=RequestMethod.PUT)
+	public @ResponseBody String putOrdersProducerConsumer (@RequestBody Orders orders, 
+			HttpServletResponse response) throws Exception {
+		
+		logger.debug("Processing Batch " + orders.getBatchId());
+				
+		//single threaded Java code
+		double batchTotal = batchServices.javaProducerConsumer(orders.getOrders());
+		
+		response.setStatus(HttpStatus.OK.value());
+		
+		return "$" + Double.toString(Math.round(batchTotal));
+	}	
+	
+	
+	
+	/**
+	 * Accepts in a batch of orders and processes them
+	 * @param orders
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "order/akka/pipeline", method=RequestMethod.PUT)
