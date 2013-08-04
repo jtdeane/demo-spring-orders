@@ -26,6 +26,16 @@
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="FILEDIRECTORY" elementType="Argument">
+              <stringProp name="Argument.name">FILEDIRECTORY</stringProp>
+              <stringProp name="Argument.value">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
         <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
@@ -68,8 +78,8 @@
           <stringProp name="HTTPSampler.implementation">Java</stringProp>
           <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
             <collectionProp name="HTTPFileArgs.files">
-              <elementProp name="/Users/jeremydeane/code/source/spring/orders/orders-web/src/test/jmeter/resources/batch.xml" elementType="HTTPFileArg">
-                <stringProp name="File.path">/Users/jeremydeane/code/source/spring/orders/orders-web/src/test/jmeter/resources/batch.xml</stringProp>
+              <elementProp name="${FILEDIRECTORY}/resources/batch.xml" elementType="HTTPFileArg">
+                <stringProp name="File.path">${FILEDIRECTORY}/resources/batch.xml</stringProp>
                 <stringProp name="File.mimetype">application/xml</stringProp>
                 <stringProp name="File.paramname"></stringProp>
               </elementProp>
