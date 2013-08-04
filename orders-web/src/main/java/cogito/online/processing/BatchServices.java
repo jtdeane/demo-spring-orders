@@ -187,7 +187,7 @@ public class BatchServices implements ApplicationContextAware {
 	        
 	        completionServicePool.submit(orderCallable);
 	        
-	        log.info("order " + order.getId() + "submitted");
+	        log.info("order " + order.getId() + " submitted");
 		}
 
 		//as they are completed process them
