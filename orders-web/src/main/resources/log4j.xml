@@ -11,19 +11,8 @@
 		</layout>      
 	</appender>
 	
-	<appender name="logfile" class="org.apache.log4j.DailyRollingFileAppender">
-    	<param name="File" value="/opt/demos/log/orders.log"/>
-    	<param name="DatePattern" value="'.'yyyy-MM-dd"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param 
-                name="ConversionPattern" 
-                value="%d{HH:mm:ss:SSS} | %t | %m%n"/>
-        </layout>      
-  	</appender>
-	
 	<category name="org.apache">
 		<priority value="error" />
-        <appender-ref ref="logfile"/>
 	</category>
 	
 	<category name="org.springframework">
@@ -37,7 +26,6 @@
 	<root>
 	   	<priority value="error" />
     	<appender-ref ref="stdout"/>
-    	<appender-ref ref="logfile"/>
   	</root>
 
 </log4j:configuration>
