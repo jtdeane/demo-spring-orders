@@ -11,7 +11,7 @@
 		</layout>      
 	</appender>
 	
-	<category name="org.apache">
+	<category name="org.apache.camel">
 		<priority value="error" />
 	</category>
 	
@@ -19,7 +19,7 @@
 		<priority value="error" />
 	</category>
 	
-	<category name="cogito.online">
+	<category name="ws.cogito.magic">
 		<priority value="debug" />
 	</category>
 
